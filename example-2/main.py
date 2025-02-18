@@ -1,7 +1,6 @@
 import csv
 from graph import Graph
 
-
 def get_vertices(file_path):
     with open(file_path, 'r') as file:
         csv_reader = csv.reader(file)
@@ -11,6 +10,23 @@ def get_vertices(file_path):
             vertices.add(row[0])
             vertices.add(row[1])
     return list(vertices)
+
+def bfs_better_path(graph: Graph, start, end):
+    queue = []
+    queue.append(start)
+    visited = set()
+    visited.add(start)
+    count = 0
+    while not queue.empty():
+        current = queue.pop(0)
+        count += 1
+        if current == end:
+            return count
+        for neighbor in graph.array[current]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
 
 def add_edges(file_path, graph: Graph):
     with open(file_path, 'r') as file:
