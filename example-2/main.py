@@ -1,4 +1,4 @@
-⁠import csv
+import csv
 from graph import Graph
 
 def get_vertices(file_path):
