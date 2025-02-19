@@ -1,4 +1,4 @@
-import csv
+⁠import csv
 from graph import Graph
 
 def get_vertices(file_path):
@@ -11,22 +11,56 @@ def get_vertices(file_path):
             vertices.add(row[1])
     return list(vertices)
 
-def bfs_better_path(graph: Graph, start, end):
+def bfs_path(graph: Graph, start: str, end: str):
     queue = []
     queue.append(start)
     visited = set()
     visited.add(start)
-    count = 0
-    while not queue.empty():
+    parent = {start: None}
+    
+    while queue:
         current = queue.pop(0)
-        count += 1
         if current == end:
-            return count
-        for neighbor in graph.array[current]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                queue.append(neighbor)
+            path = []
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+            return path[::-1]
+        
+        current_index = graph.vertex_index[current]
+        temp = graph.array[current_index].head
+        while temp:
+            if temp.value not in visited:
+                visited.add(temp.value)
+                queue.append(temp.value)
+                parent[temp.value] = current
+            temp = temp.next
+    return None
 
+def dfs_path(graph: Graph, start: str, end: str):
+    visited = set()
+    path = []
+    
+    def dfs_recursive(current: str):
+        visited.add(current)
+        path.append(current)
+        
+        if current == end:
+            return True
+            
+        current_index = graph.vertex_index[current]
+        temp = graph.array[current_index].head
+        while temp:
+            if temp.value not in visited:
+                if dfs_recursive(temp.value):
+                    return True
+            temp = temp.next
+        
+        path.pop()
+        return False
+    
+    dfs_recursive(start)
+    return path if path and path[-1] == end else None
 
 def add_edges(file_path, graph: Graph):
     with open(file_path, 'r') as file:
@@ -39,11 +73,17 @@ def add_edges(file_path, graph: Graph):
 def main():
     vertices = get_vertices("file.csv")
     print("Vertices: ")
-    print(vertices )
+    print(vertices)
     graph = Graph(vertices)
-    add_edges("file.csv",graph )
+    add_edges("file.csv", graph)
     print("Grafo: ")
     graph.print_graph()
+    
+    start = vertices[0]
+    end = vertices[-1]
+    print("\nCaminho BFS:", bfs_path(graph, start, end))
+    print("Caminho DFS:", dfs_path(graph, start, end))
+
 if __name__ == "__main__":
     main()
 
