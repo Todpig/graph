@@ -64,7 +64,6 @@ def dfs_path(graph: Graph, start: str, end: str):
 
 def add_edges(file_path, graph: Graph):
     with open(file_path, 'r') as file:
-        vertices = set()
         csv_reader = csv.reader(file)
         next(csv_reader, None)
         for row in csv_reader:
@@ -79,8 +78,10 @@ def main():
     print("Grafo: ")
     graph.print_graph()
     
-    start = vertices[0]
-    end = vertices[-1]
+    start = input("Digite o vértice de início: ")
+    end = input("Digite o vértice de destino: ")
+    if(start not in vertices or end not in vertices):
+       return print("Os vértices informados não existem no grafo.")
     print("\nCaminho BFS:", bfs_path(graph, start, end))
     print("Caminho DFS:", dfs_path(graph, start, end))
 
