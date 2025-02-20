@@ -40,8 +40,10 @@ def bfs_path(graph: Graph, start: str, end: str):
 def dfs_path(graph: Graph, start: str, end: str):
     visited = set()
     path = []
-    
-    def dfs_recursive(current: str):
+    dfs_recursive(start, visited, path, graph, end)
+    return path if path and path[-1] == end else None
+
+def dfs_recursive(current: str, visited: set, path: list, graph: Graph, end: str):
         visited.add(current)
         path.append(current)
         
@@ -52,15 +54,12 @@ def dfs_path(graph: Graph, start: str, end: str):
         temp = graph.array[current_index].head
         while temp:
             if temp.value not in visited:
-                if dfs_recursive(temp.value):
+                if dfs_recursive(temp.value, visited, path, graph, end):
                     return True
             temp = temp.next
         
         path.pop()
         return False
-    
-    dfs_recursive(start)
-    return path if path and path[-1] == end else None
 
 def add_edges(file_path, graph: Graph):
     with open(file_path, 'r') as file:
@@ -78,8 +77,8 @@ def main():
     print("Grafo: ")
     graph.print_graph()
     
-    start = input("Digite o vértice de início: ")
-    end = input("Digite o vértice de destino: ")
+    start = input("Digite o vértice de início: ").upper()
+    end = input("Digite o vértice de destino: ").upper()
     if(start not in vertices or end not in vertices):
        return print("Os vértices informados não existem no grafo.")
     print("\nCaminho BFS:", bfs_path(graph, start, end))
